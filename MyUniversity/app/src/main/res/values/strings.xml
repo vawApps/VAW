@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">My University</string>
+    <string name="action_settings">Settings</string>
+    <string name="Subtítulo">Tu nota</string>
+    <string name="Título">Materia</string>
+    <string name="Descripcion_popup">Añadir porcentaje del corte (%)...</string>
+    <string name="Default_porcentaje">00.00</string>
+    <string name="Simbolo_porcentaje">%</string>
+    <string name="Descripcion_editar_corte">Editar corte</string>
+    <string name="Default_nota">0.0</string>
+    <string name="Agrega_nota">Agregar Nota</string>
+    <string name="Popup_anadir_nota">Añadir nota</string>
+    <string name="Popup_anadir_porcentaje">Añadir porcentaje</string>
+    <string name="Popup_anadir_puntaje">Añadir puntaje</string>
+    <string name="Titulo_popup_notas">Notas de corte</string>
 </resources>

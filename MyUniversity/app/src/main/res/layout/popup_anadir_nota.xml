@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="192dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="@string/Popup_anadir_nota"
+        android:id="@+id/nombreNota"/>
+
+    <EditText
+        android:layout_width="192dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="@string/Popup_anadir_porcentaje"
+        android:inputType="number"
+        android:digits="01234567890."
+        android:id="@+id/porcentajeNota"/>
+
+    <EditText
+        android:layout_width="192dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="@string/Popup_anadir_puntaje"
+        android:inputType="number"
+        android:digits="01234567890."
+        android:id="@+id/puntajeNota"/>
+
+</LinearLayout>
