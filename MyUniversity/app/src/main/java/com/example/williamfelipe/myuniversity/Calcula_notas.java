@@ -9,15 +9,22 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by WilliamFelipe on 28/06/2016.
  */
-public class Calcula_notas extends AppCompatActivity {
+public class Calcula_notas extends AppCompatActivity implements ManejoDB.OnPostExecute{
 
-    TextView tituloMateria, notaMateria;
-    EditText porcentaje1, porcentaje2, porcentaje3;
-    EditText notasCorte1, notasCorte2, notasCorte3;
-    String direccionConsultaPorcentajes = "http://vawdb.freeoda.com/VAW/Consulta_porcentaje_corte.php";
+    ArrayList<String> listaPorcentajes = new ArrayList<>();
+
+    TextView tituloMateria, notaMateria; // titulo y nota de la materia que se muestra en el toolbar
+    EditText porcentaje1, porcentaje2, porcentaje3; // porcentajes de cada corte que se muestran
+    EditText notasCorte1, notasCorte2, notasCorte3; // notas par cada corte
+
+    String direccionConsultaPorcentajes = "http://vawdb.freeoda.com/VAW/Consulta_porcentaje_corte.php"; //direccion de la consulta de los porcentajes de cada corte
+
+    ManejoDB manejoDB = new ManejoDB("CONSULTA","porcenCorte",direccionConsultaPorcentajes,"POST"); // Objeto que permite hacer las consultas de los porcentajes
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,32 +35,29 @@ public class Calcula_notas extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        tituloMateria = (TextView) findViewById(R.id.txtAbTitulo);
-        notaMateria = (TextView) findViewById(R.id.txtAbSubTitulo);
+        tituloMateria = (TextView) findViewById(R.id.txtAbTitulo); //cast del titulo del toolbar
+        notaMateria = (TextView) findViewById(R.id.txtAbSubTitulo); //cast del subtitulo del toolbar
 
-        //Datos que paso de la clase Main por el OnclickItemList
-        final String materia = getIntent().getStringExtra("nombreMateria"); //nombre de la materia
-        String codigo = getIntent().getStringExtra("codigoMateria"); //codigo de la materia
-        final String matriculada = getIntent().getStringExtra("codigoMatricula");//codigo de materiamatriculada
+        porcentaje1 = (EditText) findViewById(R.id.Porcentaje1); //cast para el primer porcentaje del corte
+        porcentaje2 = (EditText) findViewById(R.id.Porcentaje2); //cast para el segundo porcentaje del corte
+        porcentaje3 = (EditText) findViewById(R.id.Porcentaje3); //cast para el tercer porcentaje del corte
 
-        String tipoQuery = "consulta";
-        String postExecute = "porcenCorte";
-        String queHacer = "porcentajesCorte";
+        notasCorte1 = (EditText) findViewById(R.id.Nota1); //cast de las notas del primer corte
+        notasCorte2 = (EditText) findViewById(R.id.Nota2); //cast de las notas del segundo corte
+        notasCorte3 = (EditText) findViewById(R.id.Nota3); //cast de las notas del tercer corte
 
-        //Cambio el nombre del titulo del toolbar por el de la materia a la que ingreso
-        tituloMateria.setText(materia);
+        String nombreMateria = getIntent().getStringExtra("nombreMateria"); //nombre de la materia que paso por intent desde la clase Principal
+        String codigoMateria = getIntent().getStringExtra("codigoMateria"); //codigo de la materia que paso por intent desde la clase Principal
+        final String codigoMatricula = getIntent().getStringExtra("codigoMatricula"); //codigo de materia matriculada que paso por intent desde la clase Principal
 
-        porcentaje1 = (EditText) findViewById(R.id.Porcentaje1);
-        porcentaje2 = (EditText) findViewById(R.id.Porcentaje2);
-        porcentaje3 = (EditText) findViewById(R.id.Porcentaje3);
+        tituloMateria.setText(nombreMateria);//Cambio el nombre del titulo del toolbar por el de la materia a la que ingreso
+        notaMateria.setText("Perdiste Loco"); // cambio el nombre del subtitulo del toolbar por la nota de la materia a la que ingreso
 
-        //Consultar los porcentajes de cada corte para la materia seleccionada
-        final ManejoDB manejoDB = new ManejoDB(tipoQuery,postExecute, porcentaje1, porcentaje2, porcentaje3);
-        manejoDB.execute(queHacer,direccionConsultaPorcentajes,codigo);
+        String[] variablePOST = {"materiaId"}; // Array con los nombres de las variables POST que estan en el archivo php
+        String[] valoresPOST= {codigoMateria}; // Array con los valores que ingresaran por POST
 
-        //Objeto para cambiar los porcentajes
-        String tipoQuery2 = "update";
-        final ManejoDB manejoDB1 = new ManejoDB(tipoQuery2);
+        manejoDB.delegate = this;
+        manejoDB.execute(variablePOST,valoresPOST);
 
         porcentaje1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,8 +66,7 @@ public class Calcula_notas extends AppCompatActivity {
                 PopupPorcentaje popupPorcentaje = new PopupPorcentaje();
                 popupPorcentaje.setQuePorcentaje("primero");
                 popupPorcentaje.setIdCorte("1");
-                popupPorcentaje.setIdMateriaMatricula(matriculada);
-                popupPorcentaje.setManejoDB(manejoDB1);
+                popupPorcentaje.setIdMateriaMatricula(codigoMatricula);
                 popupPorcentaje.show(fragmentManager,"tagPersonalizado");
             }
         });
@@ -75,7 +78,7 @@ public class Calcula_notas extends AppCompatActivity {
                 PopupPorcentaje popupPorcentaje = new PopupPorcentaje();
                 popupPorcentaje.setQuePorcentaje("segundo");
                 popupPorcentaje.setIdCorte("2");
-                popupPorcentaje.setIdMateriaMatricula(matriculada);
+                popupPorcentaje.setIdMateriaMatricula(codigoMatricula);
                 popupPorcentaje.show(fragmentManager,"tagPersonalizado");
             }
         });
@@ -87,15 +90,10 @@ public class Calcula_notas extends AppCompatActivity {
                 PopupPorcentaje popupPorcentaje = new PopupPorcentaje();
                 popupPorcentaje.setQuePorcentaje("tercero");
                 popupPorcentaje.setIdCorte("3");
-                popupPorcentaje.setIdMateriaMatricula(matriculada);
+                popupPorcentaje.setIdMateriaMatricula(codigoMatricula);
                 popupPorcentaje.show(fragmentManager,"tagPersonalizado");
             }
         });
-
-
-        notasCorte1 = (EditText) findViewById(R.id.Nota1);
-        notasCorte2 = (EditText) findViewById(R.id.Nota2);
-        notasCorte3 = (EditText) findViewById(R.id.Nota3);
 
         notasCorte1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +122,11 @@ public class Calcula_notas extends AppCompatActivity {
     }
 
 
-
-
+    @Override
+    public void Execute() {
+        listaPorcentajes = manejoDB.getListaFinal();
+        porcentaje1.setText(listaPorcentajes.get(0));
+        porcentaje2.setText(listaPorcentajes.get(1));
+        porcentaje3.setText(listaPorcentajes.get(2));
+    }
 }

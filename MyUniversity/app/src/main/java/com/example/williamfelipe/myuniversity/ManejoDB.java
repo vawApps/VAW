@@ -30,54 +30,67 @@ import java.util.ArrayList;
  * para esta clase estan reservados para el 'que ejecutar' y la url que contiene el json
  */
 
-public class ManejoDB extends AsyncTask<String, Void, String> {
-    ArrayList<String> listaFinal = new ArrayList<>();
-    String datosBuffer;
 
-    //Campos de constructor
-    String tipoQuery; //saber si es un select, un update o un delete
-    String campoJson; // que datos quiere en el array - cada constructor necesita tenerlo
-    ListView listView; //lista donde mostrar los datos
-    Context context;
-    EditText editText1, editText2, editText3; // textos donde van los porcentajes
+public class ManejoDB extends AsyncTask<String[], Void, String> {
 
-    public ManejoDB(String tipoQuery) {
-        this.tipoQuery = tipoQuery;
+    public interface OnPostExecute{
+        public void Execute();
     }
 
-    public ManejoDB(String tipoQuery, String campoJson) {
+    OnPostExecute delegate;
+
+
+    ArrayList<String> listaFinal = new ArrayList<>(); //Array donde van a depositarse los datos del json
+    String mensajeQuery; //Tomara el valor de los mensajes que retorna el Query (elimina, agrega, modifica)
+    String tipoQuery; //Me indica que tipo de query se va a manejar - (consulta) - (elimina, agrega, modifica)
+    String campoJson; //Que valores del Json son lo que vas a depositarse en el array
+    String queModo; //Si el query del php usa POST o no
+    String direccionUrl; // Direccion donde se encuentra el archivo PHP que devuelve el JSON
+
+    //Constructor de la clase para consultas
+    public ManejoDB(String tipoQuery, String campoJson, String direccionUrl, String queModo) {
         this.tipoQuery = tipoQuery;
         this.campoJson = campoJson;
+        this.direccionUrl = direccionUrl;
+        this.queModo = queModo;
     }
 
-    //constructor que se usa para mostrar en una lista los valores de la consulta
-    public ManejoDB(String tipoQuery, Context context, String campoJson,ListView listView) {
+    //Constructor de la clase para (elimina, agrega, modifica)
+    public ManejoDB(String tipoQuery, String direccionUrl, String queModo) {
         this.tipoQuery = tipoQuery;
-        this.context = context;
-        this.campoJson = campoJson;
-        this.listView = listView;
-    }
-
-    //constructor que se usa para mostrara en los edittext de los porcentajes
-    public ManejoDB(String tipoQuery, String campoJson, EditText editText1, EditText editText2, EditText editText3) {
-        this.tipoQuery = tipoQuery;
-        this.campoJson = campoJson;
-        this.editText1 = editText1;
-        this.editText2 = editText2;
-        this.editText3 = editText3;
+        this.direccionUrl = direccionUrl;
+        this.queModo = queModo;
     }
 
     @Override
-    protected String doInBackground(String... params) {
-        //Estos dos primeros parametros eimpre van hacer para eso RESERVADS utilizar del 2 en adelante
-        String queHacer = params[0];//que ejecutar
-        String jsonPhp = params[1];//direccion del json
+    protected String doInBackground(String[]... params) {
 
-        if(queHacer.equals("listarMaterias")){  //procedimiento que trae los datos de la consulta hecha a la tabla materias 'Consulta_materias.php'
+        if(queModo.equals("POST")){
+            String variablesPOST[] = params[0];
+            String valoresPOST[] = params[1];
+
             try {
-                String line = null; //Guarda la linea que lee del json
-                URL url = new URL(jsonPhp);
+                String line = null; //Guarda la linea
+                URL url = new URL(getDireccionUrl());
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
+                String postData = "";
+                for(int i=0;i<valoresPOST.length;i++){
+                    //Primero el nombre de la variable POST luego el valor de la variable POST
+                    postData = postData + URLEncoder.encode(variablesPOST[i],"UTF-8")+"="+URLEncoder.encode(valoresPOST[i],"UTF-8");
+                    if((i+1) != valoresPOST.length){
+                        postData = postData + "&";
+                    }
+                }
+                bufferedWriter.write(postData);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+
                 InputStream inputStream = new BufferedInputStream(httpURLConnection.getInputStream());
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 StringBuffer stringBuffer = new StringBuffer();
@@ -97,25 +110,12 @@ public class ManejoDB extends AsyncTask<String, Void, String> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-        }else if(queHacer.equals("porcentajesCorte")){ //procedimiento para mostrar los datos de la materia en layout 'calcula_nota' seleccionada en el layout 'lista_materias'
+        }else if(queModo.equals("")){
             try {
-                String codigoMateria = params[2];
-                String line = null; //Guarda la linea que lee del json
-                URL url = new URL(jsonPhp);
+
+                String line = null; //Guarda la linea
+                URL url = new URL(getDireccionUrl());
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
-                //el primer encode el nombre de la variable tiene q ser igual al del php que pasa por el metodo POST
-                //el segundo encode el nombre de la variable son los declarados que contienen los valores de los parametros
-                String postData = URLEncoder.encode("materiaId","UTF-8")+"="+URLEncoder.encode(codigoMateria,"UTF-8");
-                bufferedWriter.write(postData);
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                outputStream.close();
                 InputStream inputStream = new BufferedInputStream(httpURLConnection.getInputStream());
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 StringBuffer stringBuffer = new StringBuffer();
@@ -123,49 +123,6 @@ public class ManejoDB extends AsyncTask<String, Void, String> {
                 if(bufferedReader != null){
                     while((line = bufferedReader.readLine()) != null){
                         stringBuffer.append(line+" 'n");
-                        System.out.println(line);
-                    }
-                }else{
-                    return null;
-                }
-
-                return stringBuffer.toString();
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }else if(queHacer.equals("cambiarPorcentaje")){
-            try {
-                String idCorte = params[2];
-                String pocentajeCorte = params[3];
-                String idMateriaMatricula = params[4];
-                String line = null; //Guarda la linea que lee del json
-                URL url = new URL(jsonPhp);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
-                //el primer encode el nombre de la variable tiene q ser igual al del php que pasa por el metodo POST
-                //el segundo encode el nombre de la variable son los declarados que contienen los valores de los parametros
-                String postData = URLEncoder.encode("corteId","UTF-8")+"="+URLEncoder.encode(idCorte,"UTF-8")+"&"
-                        +URLEncoder.encode("porcenCorte","UTF-8")+"="+URLEncoder.encode(pocentajeCorte,"UTF-8")+"&"
-                        +URLEncoder.encode("materiaMatriculadaId","UTF-8")+"="+URLEncoder.encode(idMateriaMatricula,"UTF-8");
-                bufferedWriter.write(postData);
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                outputStream.close();
-                InputStream inputStream = new BufferedInputStream(httpURLConnection.getInputStream());
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuffer stringBuffer = new StringBuffer();
-
-                if(bufferedReader != null){
-                    while((line = bufferedReader.readLine()) != null){
-                        stringBuffer.append(line+" 'n");
-                        System.out.println(line);
                     }
                 }else{
                     return null;
@@ -182,9 +139,9 @@ public class ManejoDB extends AsyncTask<String, Void, String> {
         return null;
     }
 
-    public void arrayMaterias(){
+    public void arrayMaterias(String buffer){
         try {
-            JSONArray jsonArray = new JSONArray(getDatosBuffer());
+            JSONArray jsonArray = new JSONArray(buffer);
             JSONObject jsonObject = null;
             listaFinal.clear();
 
@@ -198,56 +155,69 @@ public class ManejoDB extends AsyncTask<String, Void, String> {
         }
     }
 
+    public void mensajeQuery(String buffer){
+        setMensajeQuery(buffer);
+    }
+
     @Override
     protected void onPostExecute(String s) {
-        setDatosBuffer(s);
-
-        //si es una consulta ejecuta el metodo que llena un array con los datos de la consulta
-        if(tipoQuery.equals("consulta")){
-            arrayMaterias();
-
-            if(getCampoJson().equals("nomMateria")){
-                adaptarLista();
-            }
-
-            if(getCampoJson().equals("porcenCorte")){
-                adaptarPorcentajes();
-            }
+        if(tipoQuery.equals("CONSULTA")){
+            arrayMaterias(s);
+        }else{
+            mensajeQuery(s);
         }
 
+        if(delegate != null){
+            delegate.Execute();
+        }
 
-
-    }
-
-    public void adaptarLista(){
-        ArrayAdapter arrayAdapter;
-        arrayAdapter = new ArrayAdapter<String>(context,android.R.layout.simple_expandable_list_item_1,listaFinal);
-        listView.setAdapter(arrayAdapter);
-    }
-
-    public void adaptarPorcentajes(){
-        editText1.setText(listaFinal.get(0));
-        editText2.setText(listaFinal.get(1));
-        editText3.setText(listaFinal.get(2));
-    }
-
-    public String getCampoJson() {
-        return campoJson;
-    }
-
-    public void setDatosBuffer(String datosBuffer) {
-        this.datosBuffer = datosBuffer;
-    }
-
-    public String getDatosBuffer() {
-        return datosBuffer;
     }
 
     public ArrayList<String> getListaFinal() {
         return listaFinal;
     }
 
+    public void setListaFinal(ArrayList<String> listaFinal) {
+        this.listaFinal = listaFinal;
+    }
 
+    public String getCampoJson() {
+        return campoJson;
+    }
 
+    public void setCampoJson(String campoJson) {
+        this.campoJson = campoJson;
+    }
 
+    public String getQueModo() {
+        return queModo;
+    }
+
+    public void setQueModo(String queModo) {
+        this.queModo = queModo;
+    }
+
+    public String getDireccionUrl() {
+        return direccionUrl;
+    }
+
+    public void setDireccionUrl(String direccionUrl) {
+        this.direccionUrl = direccionUrl;
+    }
+
+    public String getMensajeQuery() {
+        return mensajeQuery;
+    }
+
+    public void setMensajeQuery(String mensajeQuery) {
+        this.mensajeQuery = mensajeQuery;
+    }
+
+    public String getTipoQuery() {
+        return tipoQuery;
+    }
+
+    public void setTipoQuery(String tipoQuery) {
+        this.tipoQuery = tipoQuery;
+    }
 }

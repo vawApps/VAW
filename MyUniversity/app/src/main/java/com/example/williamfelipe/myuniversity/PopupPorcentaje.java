@@ -14,11 +14,13 @@ import android.widget.EditText;
  */
 public class PopupPorcentaje extends DialogFragment {
 
-    String quePorcentaje;
-    String idMateriaMatricula;
-    String idCorte;
+    EditText corteIngresado; // Valor del corte que ingrese
+    String quePorcentaje; // Saber que corte esta modificando
+    String idMateriaMatricula; //Cual es el id de la matricula de la materia
+    String idCorte; // Cual es el id del corte
     String direccionCambioPorcentaje = "http://vawdb.freeoda.com/VAW/Cambiar_porcentaje_corte.php";
-    ManejoDB manejoDB;
+
+    ManejoDB manejoDB = new ManejoDB("",direccionCambioPorcentaje,"POST"); //Objeto que me permite hacer la modificacion del porcentaje
 
 
     @Override
@@ -36,22 +38,20 @@ public class PopupPorcentaje extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                EditText corteIngresado = (EditText) getDialog().findViewById(R.id.PorcentajeCorte);
-                String valorCorte = corteIngresado.getText().toString();
+                corteIngresado = (EditText) getDialog().findViewById(R.id.PorcentajeCorte); // cast del valor del corte que ingrese
 
+                String[] variablePOST = {"corteId","porcenCorte","materiaMatriculadaId"}; // Array con los nombres de las variables POST que estan en el archivo php
+                String[] valoresPOST= {getIdCorte(),corteIngresado.getText().toString(),getIdMateriaMatricula()}; // Array con los valores que ingresaran por POST
 
-               //String tipoQuery = "update";
-               String queHacer = "cambiarPorcentaje";
-               //ManejoDB manejoDB = new ManejoDB(tipoQuery);
 
                 if(quePorcentaje.equals("primero")){
-                    manejoDB.execute(queHacer,direccionCambioPorcentaje,idCorte,valorCorte,idMateriaMatricula);
+                    manejoDB.execute(variablePOST,valoresPOST);
 
                 }else if(quePorcentaje.equals("segundo")){
-                    manejoDB.execute(queHacer,direccionCambioPorcentaje,idCorte,valorCorte,idMateriaMatricula);
+                    manejoDB.execute(variablePOST,valoresPOST);
 
                 }else if(quePorcentaje.equals("tercero")){
-                    manejoDB.execute(queHacer,direccionCambioPorcentaje,idCorte,valorCorte,idMateriaMatricula);
+                    manejoDB.execute(variablePOST,valoresPOST);
 
                 }
 
@@ -63,19 +63,27 @@ public class PopupPorcentaje extends DialogFragment {
         return builder.create();
     }
 
+    public String getQuePorcentaje() {
+        return quePorcentaje;
+    }
+
     public void setQuePorcentaje(String quePorcentaje) {
         this.quePorcentaje = quePorcentaje;
+    }
+
+    public String getIdMateriaMatricula() {
+        return idMateriaMatricula;
     }
 
     public void setIdMateriaMatricula(String idMateriaMatricula) {
         this.idMateriaMatricula = idMateriaMatricula;
     }
 
-    public void setIdCorte(String idCorte) {
-        this.idCorte = idCorte;
+    public String getIdCorte() {
+        return idCorte;
     }
 
-    public void setManejoDB(ManejoDB manejoDB) {
-        this.manejoDB = manejoDB;
+    public void setIdCorte(String idCorte) {
+        this.idCorte = idCorte;
     }
 }
