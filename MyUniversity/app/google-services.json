@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "284827065216",
+    "project_id": "my-university-1372"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284827065216:android:8dc70c367219034c",
+        "android_client_info": {
+          "package_name": "com.example.williamfelipe.myuniversity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "284827065216-bvnl878s4h7f2rpso1kkclshifekkoc1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.williamfelipe.myuniversity",
+            "certificate_hash": "6333756681DB81EAE1B984D1AA20349FCD85035E"
+          }
+        },
+        {
+          "client_id": "284827065216-j7217e12blobn547sih5tpje0r2op2o6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvojGAFLWdn6eaxii71GtqQb6X3rv5jxg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

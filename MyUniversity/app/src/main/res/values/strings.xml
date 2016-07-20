@@ -13,4 +13,6 @@
     <string name="Popup_anadir_porcentaje">Añadir porcentaje</string>
     <string name="Popup_anadir_puntaje">Añadir puntaje</string>
     <string name="Titulo_popup_notas">Notas de corte</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="disconnect">Disconnect</string>
 </resources>
