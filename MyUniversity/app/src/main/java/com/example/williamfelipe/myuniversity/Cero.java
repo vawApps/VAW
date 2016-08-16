@@ -1,26 +1,35 @@
 package com.example.williamfelipe.myuniversity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.StringTokenizer;
 
 /**
  * Created by VlaX on 23/07/2015.
  */
 
-public class Cero extends AppCompatActivity {
+public class Cero extends AppCompatActivity implements ManejoDB.OnPostExecute{
     Spinner lista;
     Spinner listauno;
     Spinner listados;
 
+    Button bcerouno;
 
-    String[] universidades = {"Selecciona tu Universidad","Universidad Cooperativa","Universidad Catolica","Universidad Autonoma"};
+    ArrayList<String>  arrayListaUniversidades = new ArrayList<>();
+    ArrayList<String>  arrayListaSedes = new ArrayList<>();
+    int queSpinner;
+
+    /*String[] universidades = {"Selecciona tu Universidad","Universidad Cooperativa","Universidad Catolica","Universidad Autonoma"};
     String[] sedes = {"Selecciona tu Sede"};
     String[] programas = {"Selecciona el Programa"};
 
@@ -36,7 +45,14 @@ public class Cero extends AppCompatActivity {
     String[] programapastocuc = {"Selecciona el Programa","Licenciatura Matematica","Psicologia"};
 
     String[] programacaliuao = {"Selecciona el Programa","Ingenieria Multimedia","Gastronomia"};
-    String[] programapastouao = {"Selecciona el Programa","Medicina","Odontologia","Salud Ocupacional"};
+    String[] programapastouao = {"Selecciona el Programa","Medicina","Odontologia","Salud Ocupacional"};*/
+
+    String direccionConsultaUniversidades = "http://vawdb.freeoda.com/VAW/Consulta_universidades.php";
+    ManejoDB nombreUniversidades = new ManejoDB("CONSULTA","nomUniversidad",direccionConsultaUniversidades,"");
+    ManejoDB idUniversidades = new ManejoDB("CONSULTA","idUniversidad",direccionConsultaUniversidades,"");
+
+    String direccionConsultaSedes = "http://vawdb.freeoda.com/VAW/Consulta_sedes_universidades.php";
+    ManejoDB nombreSedes = new ManejoDB("CONSULTA","descUniversidad",direccionConsultaSedes,"POST");
 
     @Override
     protected  void onCreate(Bundle savedInstanceState) {
@@ -47,7 +63,59 @@ public class Cero extends AppCompatActivity {
         listauno = (Spinner)findViewById(R.id.sede);
         listados = (Spinner)findViewById(R.id.programa);
 
-        ArrayAdapter<String> adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, universidades);
+        listauno.setEnabled(false);
+        listados.setEnabled(false);
+
+        //////////////////ACCION BOTON PARA SIGUIENTE PAGINA ///////////////////////////
+
+        bcerouno = (Button)findViewById(R.id.bcerouno);
+        bcerouno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent bcerouno = new Intent(Cero.this, Cerouno.class);
+                startActivity(bcerouno);
+            }
+        });
+
+        //////////////////ACCION BOTON PARA SIGUIENTE PAGINA //////////////////////////////
+
+        queSpinner = 1;
+        nombreUniversidades.delegate = this;
+        nombreUniversidades.execute();
+
+        idUniversidades.execute();
+
+        lista.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int i, long id) {
+                if(i != 0){
+                    listauno.setEnabled(true);
+                    listados.setEnabled(false);
+
+
+                    //ArrayList<String> codigos = idUniversidades.getListaFinal();
+                    //String codigoUniversidad = codigos.get(i);
+
+
+
+                    String[] variablesPOST = {"idUniversi"};
+                    String[] valoresPOST = {idUniversidades.getListaFinal().get(i)};
+
+                    queSpinner = 2;
+                    nombreSedes.delegate = nombreUniversidades.delegate;
+                    nombreSedes.execute(variablesPOST,valoresPOST);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+       /* ArrayAdapter<String> adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, universidades);
 
         final ArrayAdapter<String> adaptadorsede = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sedes);
         final ArrayAdapter<String> adaptadorsedeucc = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sedeucc);
@@ -123,7 +191,6 @@ public class Cero extends AppCompatActivity {
                             listados.setAdapter(adaptadorprogramabogotaucc);
                             break;
 
-
                 }
 
             }
@@ -153,6 +220,30 @@ public class Cero extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });
+        });*/
     }
+
+    @Override
+    public void Execute() {
+        switch (queSpinner) {
+            case 1:
+                arrayListaUniversidades = nombreUniversidades.getListaFinal();
+                ArrayAdapter adapterNombres;
+                adapterNombres = new ArrayAdapter<String>(this,android.R.layout.simple_expandable_list_item_1,arrayListaUniversidades);
+                lista.setAdapter(adapterNombres);
+                break;
+
+            case 2:
+                arrayListaSedes = nombreSedes.getListaFinal();
+                ArrayAdapter adapterSedes;
+                adapterSedes = new ArrayAdapter<String>(this,android.R.layout.simple_expandable_list_item_1,arrayListaSedes);
+                listauno.setAdapter(adapterSedes);
+                break;
+        }
+
+    }
+
+
+
+
 }

@@ -52,7 +52,7 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
         custimizeSignBtn();
         setBtnClickListeners();
         progress_dialog = new ProgressDialog(this);
-        progress_dialog.setMessage("Signing in....");
+        progress_dialog.setMessage("Iniciando sesión...");
 
     }
 
@@ -71,15 +71,6 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
                 .build();
     }
 
-    /*
-      Customize sign-in button. The sign-in button can be displayed in
-      multiple sizes and color schemes. It can also be contextually
-      rendered based on the requested scopes. For example. a red button may
-      be displayed when Google+ scopes are requested, but a white button
-      may be displayed when only basic profile is requested. Try adding the
-      Plus.SCOPE_PLUS_LOGIN scope to see the  difference.
-    */
-
     private void custimizeSignBtn(){
 
         signIn_btn = (SignInButton) findViewById(R.id.sign_in_button);
@@ -96,8 +87,8 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
     private void setBtnClickListeners(){
         // Button listeners
         signIn_btn.setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.disconnect_button).setOnClickListener(this);
+        //findViewById(R.id.sign_out_button).setOnClickListener(this);
+        //findViewById(R.id.disconnect_button).setOnClickListener(this);
     }
 
     protected void onStart() {
@@ -204,10 +195,10 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sign_in_button:
-                Toast.makeText(this, "start sign process", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Espera por favor...", Toast.LENGTH_SHORT).show();
                 gPlusSignIn();
                 break;
-            case R.id.sign_out_button:
+           /* case R.id.sign_out_button:
                 Toast.makeText(this, "Sign Out from G+", Toast.LENGTH_LONG).show();
                 gPlusSignOut();
 
@@ -216,7 +207,7 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
                 Toast.makeText(this, "Revoke Access from G+", Toast.LENGTH_LONG).show();
                 gPlusRevokeAccess();
 
-                break;
+                break; */
         }
     }
 
@@ -226,7 +217,7 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
 
     private void gPlusSignIn() {
         if (!google_api_client.isConnecting()) {
-            Log.d("user connected","connected");
+            Log.d("Usuario conectado","connected");
             is_signInBtn_clicked = true;
             progress_dialog.show();
             resolveSignInError();
@@ -275,7 +266,7 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
                     .setResultCallback(new ResultCallback<Status>() {
                         @Override
                         public void onResult(Status arg0) {
-                            Log.d("MainActivity", "User access revoked!");
+                            Log.d("Login", "El acceso del usuario revocado!");
                             buidNewGoogleApiClient();
                             google_api_client.connect();
                             changeUI(false);
@@ -299,7 +290,7 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
 
             } else {
                 Toast.makeText(getApplicationContext(),
-                        "No Personal info mention", Toast.LENGTH_LONG).show();
+                        "No hay información Personal", Toast.LENGTH_LONG).show();
 
             }
 
@@ -323,15 +314,12 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
         String personPhotoUrl = currentPerson.getImage().getUrl();
         String email = Plus.AccountApi.getAccountName(google_api_client);
 
-        user_name = (TextView) findViewById(R.id.userName);
-        gemail_id = (TextView)findViewById(R.id.emailId);
 
         user_name.setText("Name: "+personName);
         gemail_id.setText("Email Id: " +email);
 
-        setProfilePic(personPhotoUrl);
         progress_dialog.dismiss();
-        Toast.makeText(this, "Person information is shown!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "la información personal se muestra!", Toast.LENGTH_LONG).show();
 
         ManejoDB manejoDB =  new ManejoDB("",direccionInsertarLogin,"POST");
         String[] variablesPOST = {"idLog","nickN"};
@@ -339,18 +327,6 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
         manejoDB.execute(variablesPOST,valoresPOST);
     }
 
-    /*
-     By default the profile pic url gives 50x50 px image.
-     If you need a bigger image we have to change the query parameter value from 50 to the size you want
-    */
-
-    private void setProfilePic(String profile_pic){
-        profile_pic = profile_pic.substring(0,
-                profile_pic.length() - 2)
-                + PROFILE_PIC_SIZE;
-        ImageView    user_picture = (ImageView)findViewById(R.id.profile_pic);
-        new LoadProfilePic(user_picture).execute(profile_pic);
-    }
 
     /*
      Show and hide of the Views according to the user login status
@@ -358,12 +334,15 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
 
     private void changeUI(boolean signedIn) {
         if (signedIn) {
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+           // findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+          //  findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+            Intent Cero = new Intent(getApplicationContext(), Cero.class);
+            startActivity(Cero);
         } else {
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+            //findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+
         }
     }
 
