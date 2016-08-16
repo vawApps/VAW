@@ -39,8 +39,24 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Bienvenido a My University"
-            android:id="@+id/titulocerouno"
+            android:id="@+id/tituloinicio"
             android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Comienza ahora:"
+            android:id="@+id/tituloiniciouno"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="10dp" />
 
     </LinearLayout>
 
@@ -48,72 +64,21 @@
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="100dp"
-        android:paddingRight="100dp"
-        android:paddingBottom="130dp" />
+        android:layout_marginBottom="100dp"
+        android:layout_gravity="center_horizontal" />
 
     <LinearLayout
-        android:id="@+id/sign_out_and_disconnect"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true">
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:gravity="left">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_pic"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:src="@android:drawable/sym_def_app_icon"
-                />
-
-            <TextView
-                android:id="@+id/userName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" user name:"
-                android:layout_marginTop="15dp"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/profile_pic"
-                android:textSize="14sp"
-                />
-
-            <TextView
-                android:id="@+id/emailId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="email id:"
-                android:layout_below="@+id/userName"
-                android:layout_marginTop="15dp"
-                android:layout_marginLeft="10dp"
-                android:textSize="14sp"
-                android:layout_toRightOf="@+id/profile_pic" />
-
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/sign_out_button"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sign_out"
-
-            android:layout_gravity="center_vertical" />
-
-        <Button
-            android:id="@+id/disconnect_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/disconnect"
-            android:layout_gravity="center_vertical" />
-
+            android:text="© VAW apps 2016"
+            android:id="@+id/textView"
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
 
 </LinearLayout>
