@@ -6,8 +6,6 @@
     tools:context=".Cero"
     android:background="@color/primary">
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -46,7 +44,21 @@
 
 </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_marginTop="40dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Cual es tu programa?"
+            android:id="@+id/textView2" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,29 +69,12 @@
         android:layout_marginTop="40dp">
 
         <Spinner
-            android:id="@+id/universidad"
+            android:id="@+id/facultad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:spinnerMode="dialog"
             style="@android:style/Widget.Holo.Light.Spinner" />
 
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:layout_marginTop="40dp" >
-
-        <Spinner
-            style="@android:style/Widget.Holo.Light.Spinner"
-            android:id="@+id/sede"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dialog" />
     </LinearLayout>
 
     <LinearLayout
@@ -110,7 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Siguiente"
-            android:id="@+id/bcerouno"
+            android:id="@+id/bceropuntouno"
             android:textColor="@color/primary"
             android:clickable="false"
             android:paddingLeft="100dp"
