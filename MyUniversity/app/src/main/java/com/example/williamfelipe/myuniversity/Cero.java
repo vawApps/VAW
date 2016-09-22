@@ -72,8 +72,8 @@ public class Cero extends AppCompatActivity implements ManejoDB.OnPostExecute{
         bcerouno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent bcerouno = new Intent(Cero.this, Cerouno.class);
-                startActivity(bcerouno);
+                Intent intent = new Intent(Cero.this, Ceropuntouno.class);
+                startActivity(intent);
             }
         });
 
