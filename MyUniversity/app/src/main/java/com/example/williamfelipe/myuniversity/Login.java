@@ -1,5 +1,7 @@
 package com.example.williamfelipe.myuniversity;
 
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -15,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
@@ -26,7 +29,9 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.model.people.Person;
+
 import java.io.InputStream;
+
 /**
  * Created by user on 13/07/2016.
  */
@@ -61,17 +66,17 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
     While initializing the GoogleApiClient object, request the Plus.SCOPE_PLUS_LOGIN scope.
     */
 
-    private void buidNewGoogleApiClient(){
+    private void buidNewGoogleApiClient() {
 
-        google_api_client =  new GoogleApiClient.Builder(this)
+        google_api_client = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .addApi(Plus.API,Plus.PlusOptions.builder().build())
+                .addApi(Plus.API, Plus.PlusOptions.builder().build())
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
     }
 
-    private void custimizeSignBtn(){
+    private void custimizeSignBtn() {
 
         signIn_btn = (SignInButton) findViewById(R.id.sign_in_button);
         signIn_btn.setSize(SignInButton.SIZE_STANDARD);
@@ -84,7 +89,7 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
       Set on click Listeners on the sign-in sign-out and disconnect buttons
      */
 
-    private void setBtnClickListeners(){
+    private void setBtnClickListeners() {
         // Button listeners
         signIn_btn.setOnClickListener(this);
         //findViewById(R.id.sign_out_button).setOnClickListener(this);
@@ -103,7 +108,7 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
         }
     }
 
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         if (google_api_client.isConnected()) {
             google_api_client.connect();
@@ -135,7 +140,7 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         if (!result.hasResolution()) {
-            google_api_availability.getErrorDialog(this, result.getErrorCode(),request_code).show();
+            google_api_availability.getErrorDialog(this, result.getErrorCode(), request_code).show();
             return;
         }
 
@@ -217,7 +222,7 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
 
     private void gPlusSignIn() {
         if (!google_api_client.isConnecting()) {
-            Log.d("Usuario conectado","connected");
+            Log.d("Usuario conectado", "connected");
             is_signInBtn_clicked = true;
             progress_dialog.show();
             resolveSignInError();
@@ -304,14 +309,24 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
      set the User information into the views defined in the layout
      */
 
-    TextView   user_name ;
+    TextView user_name;
     TextView gemail_id;
     String direccionInsertarLogin = "http://vawdb.freeoda.com/VAW/Insertar_login.php";
 
-    private void setPersonalInfo(Person currentPerson){
+    private void setPersonalInfo(Person currentPerson) {
 
         String personName = currentPerson.getDisplayName();
         String personPhotoUrl = currentPerson.getImage().getUrl();
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         String email = Plus.AccountApi.getAccountName(google_api_client);
 
 
