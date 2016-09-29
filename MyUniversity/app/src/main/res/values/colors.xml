@@ -8,4 +8,6 @@
     <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorAccent">#FF5722</color>
     <color name="colorWhite">#FFFFFF</color>
+
+    <color name="window_background">#FFF5F5F5</color>
 </resources>

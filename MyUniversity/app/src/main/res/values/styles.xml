@@ -6,6 +6,8 @@
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
 
+        <item name="android:windowBackground">@color/window_background</item>
+
     </style>
 
     <style name="menu_label_style">
