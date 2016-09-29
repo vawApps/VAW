@@ -13,4 +13,14 @@
     <string name="Popup_anadir_porcentaje">Añadir porcentaje</string>
     <string name="Popup_anadir_puntaje">Añadir puntaje</string>
     <string name="Titulo_popup_notas">Notas de corte</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="disconnect">Disconnect</string>
+
+    <string name="home_item">Home</string>
+    <string name="productos_item">Productos</string>
+    <string name="compras_item">Carrito</string>
+    <string name="ordenes_item">Ordenes</string>
+    <string name="facturas_item">Facturas</string>
+    <string name="log_out_item">Cerrar Sesión</string>
+    <string name="configuracion_item">Configuración</string>
 </resources>
