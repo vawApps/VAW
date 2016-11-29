@@ -337,8 +337,8 @@ public class Login extends AppCompatActivity implements OnConnectionFailedListen
         Toast.makeText(this, "la información personal se muestra!", Toast.LENGTH_LONG).show();
 
         ManejoDB manejoDB =  new ManejoDB("",direccionInsertarLogin,"POST");
-        String[] variablesPOST = {"idLog","nickN"};
-        String[] valoresPOST = {email,personName};
+        String[] variablesPOST = {"nickN"};
+        String[] valoresPOST = {personName};
         manejoDB.execute(variablesPOST,valoresPOST);
     }
 
